@@ -1,0 +1,32 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Desenvolvedores {
+  id             Int      @id @default(autoincrement())
+  nivel          Int
+  nome           String
+  sexo           String
+  datanascimento String
+  idade          Int
+  hobby          String
+  Niveis         Niveis   @relation(fields: [nivel], references: [id])
+  
+  @@map("tb_desenvolvedores")
+}
+
+model Niveis {
+  id              Int               @id @default(autoincrement())
+  nivel           String
+  Desenvolvedores Desenvolvedores[]
+
+  @@map("tb_niveis")
+}
