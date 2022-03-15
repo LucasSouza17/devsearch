@@ -1,8 +1,7 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
-  Actionsheet,
   Box,
   Button,
   Fab,
@@ -10,67 +9,36 @@ import {
   Heading,
   Icon,
   Input,
-  Text,
   theme,
   VStack,
 } from "native-base";
 import { RefreshControl, StatusBar } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { DevCard } from "../../Components/DevCard";
-import { api } from "../../services/api";
-import moment from "moment";
-import { useDebouncedCallback } from "use-debounce";
 
-interface DesenvolvedorProps {
-  id: number;
-  nome: string;
-  sexo: "M" | "F";
-  datanascimento: string;
-  idade: number;
-  hobby: string;
-  Niveis: {
-    id: number;
-    nivel: string;
-  };
-}
+import { DevCard } from "../../components/DevCard";
+import { OrderModal } from "../../components/OrderModal";
+import { useDesenvolvedor } from "../../hooks/useDesevolvedor";
+import { RemoveModal } from "../../components/RemoveModal";
 
 const Home: React.FC = () => {
-  const [desenvolvedores, setDesenvolvedores] = useState<DesenvolvedorProps[]>(
-    [],
-  );
-  const [page, setPage] = useState<number>(1);
-  const [order, setOrder] = useState<"asc" | "desc">("asc");
-  const [search, setSearch] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const {
+    desenvolvedores,
+    totalPages,
+    getDesenvolvedores,
+    isLoading,
+    page,
+    changePage,
+    order,
+    setOrder,
+    typeSearch,
+    removeDev,
+  } = useDesenvolvedor();
 
-  const [modalOrderOpen, setModalOrderOpen] = useState<boolean>(false);
+  const [isOrderModalVisible, setIsOrderModalVisible] =
+    useState<boolean>(false);
+  const [isModalRemoveVisible, setIsModalRemoveVisible] = useState(false);
 
-  useEffect(() => {
-    getDesenvolvedores();
-  }, [page, order, search]);
-
-  const getDesenvolvedores = async () => {
-    setIsLoading(true);
-    const response = await api.get(
-      `/dev?page=${page}&order=${order}&search=${search}`,
-    );
-
-    const formatedData = response.data.map((data: DesenvolvedorProps) => {
-      return {
-        ...data,
-        datanascimento: moment(new Date(data.datanascimento))
-          .utc()
-          .format("DD/MM/YYYY"),
-      };
-    });
-
-    setDesenvolvedores(formatedData);
-    setIsLoading(false);
-  };
-
-  const typeSearch = useDebouncedCallback((text: string) => {
-    setSearch(text);
-  }, 800);
+  const [selectedDev, setSelectedDev] = useState<number>(0);
 
   return (
     <Box background="white" width="full" height="full">
@@ -95,7 +63,7 @@ const Home: React.FC = () => {
         colorScheme="blue"
         marginX={4}
         marginTop={4}
-        onPress={() => setModalOrderOpen(true)}>
+        onPress={() => setIsOrderModalVisible(true)}>
         Ordenar
       </Button>
       <FlatList
@@ -104,10 +72,17 @@ const Home: React.FC = () => {
           <RefreshControl
             colors={[theme.colors.blue[400]]}
             refreshing={isLoading}
-            onRefresh={() => getDesenvolvedores()}
+            onRefresh={() => {
+              getDesenvolvedores();
+            }}
           />
         }
+        onEndReached={() => {
+          totalPages > page ? changePage(page + 1) : {};
+        }}
+        onEndReachedThreshold={0.6}
         data={desenvolvedores}
+        keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
           <VStack margin={4} space={4}>
             <DevCard
@@ -117,6 +92,10 @@ const Home: React.FC = () => {
               idade={item.idade}
               hobby={item.hobby}
               nivel={item.Niveis.nivel}
+              onPressRemove={() => {
+                setIsModalRemoveVisible(true), setSelectedDev(item.id);
+              }}
+              onPressUpdate={() => {}}
             />
           </VStack>
         )}
@@ -129,35 +108,30 @@ const Home: React.FC = () => {
         size="sm"
         icon={<Icon as={Feather} name="plus" size="sm" />}
       />
-      <Actionsheet
-        isOpen={modalOrderOpen}
-        onClose={() => setModalOrderOpen(false)}>
-        <Actionsheet.Content>
-          <Box p={2}>
-            <Text fontSize="lg" color="blue.500">
-              Ordenação
-            </Text>
-          </Box>
-          <Actionsheet.Item
-            background={order === "asc" ? "blue.100" : "transparent"}
-            onPress={() => {
-              setModalOrderOpen(false), setOrder("asc");
-            }}>
-            <Text fontSize="md" color={order === "asc" ? "blue.500" : "black"}>
-              A - Z
-            </Text>
-          </Actionsheet.Item>
-          <Actionsheet.Item
-            background={order === "desc" ? "blue.100" : "transparent"}
-            onPress={() => {
-              setModalOrderOpen(false), setOrder("desc");
-            }}>
-            <Text fontSize="md" color={order === "desc" ? "blue.500" : "black"}>
-              Z - A
-            </Text>
-          </Actionsheet.Item>
-        </Actionsheet.Content>
-      </Actionsheet>
+      <OrderModal
+        isVisible={isOrderModalVisible}
+        onClose={() => setIsOrderModalVisible(false)}
+        active={order}
+        onPressAsc={() => {
+          setIsOrderModalVisible(false), setOrder("asc");
+        }}
+        onPressDesc={() => {
+          setIsOrderModalVisible(false), setOrder("desc");
+        }}
+      />
+
+      <RemoveModal
+        title="Remover Desenvolvedor"
+        description={
+          "Se você tocar no botão remover, você irá excluir permanentemente o desenvolvedor da sua base.\nSabendo das informações, deseja remover?"
+        }
+        isOpen={isModalRemoveVisible}
+        onClose={() => setIsModalRemoveVisible(false)}
+        onCancel={() => setIsModalRemoveVisible(false)}
+        onRemove={() => {
+          setIsModalRemoveVisible(false), removeDev(selectedDev);
+        }}
+      />
     </Box>
   );
 };

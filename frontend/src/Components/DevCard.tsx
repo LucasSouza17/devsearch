@@ -7,9 +7,11 @@ interface DevCardProps {
   idade: number
   hobby: string
   nivel: string
+  onPressUpdate: () => void
+  onPressRemove: () => void
 }
 
-export function DevCard({nome, sexo, datanascimento, idade, hobby, nivel}: DevCardProps) {
+export function DevCard({nome, sexo, datanascimento, idade, hobby, nivel, onPressRemove, onPressUpdate}: DevCardProps) {
   return (
     <Box rounded="sm" background="gray.50">
       <Box background="blue.500" padding={2} rounded="sm" roundedBottom={0}>
@@ -39,8 +41,8 @@ export function DevCard({nome, sexo, datanascimento, idade, hobby, nivel}: DevCa
         <Text fontWeight="bold" fontSize="md" color="blue.500">{nivel}</Text>
       </Box>
       <HStack flexWrap="wrap" margin={2} marginTop={0} space={2} justifyContent="center">
-        <Button w="48.5%" variant="outline" colorScheme="orange" marginTop={2}>Editar</Button>
-        <Button w="48.5%" variant="outline" colorScheme="red" marginTop={2}>Remover</Button>
+        <Button onPress={onPressUpdate} w="48.5%" variant="outline" colorScheme="orange" marginTop={2}>Editar</Button>
+        <Button onPress={onPressRemove} w="48.5%" variant="outline" colorScheme="red" marginTop={2}>Remover</Button>
       </HStack>
     </Box>
   )

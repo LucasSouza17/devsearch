@@ -6,8 +6,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { theme, Icon } from "native-base";
 
-import Desenvolvedores from "./Pages/Desenvolvedores";
-import Niveis from "./Pages/Niveis";
+import Desenvolvedores from "./pages/Desenvolvedores";
+import Niveis from "./pages/Niveis";
 import { Feather } from "@expo/vector-icons";
 
 const Stack = createNativeStackNavigator();
