@@ -97,6 +97,7 @@ describe("Get Desenvolvedores", () => {
     const response = await request(app).get("/dev")
 
     expect(response.status).toBe(200);
+    expect(response.headers).toHaveProperty("x-total-count")
   })
 
   it("Should be able to get desenvolvedores with pagination", async () => {

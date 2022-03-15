@@ -37,6 +37,7 @@ describe("Get Nivel", () => {
   it("Should be able to get niveis", async () => {
     const response = await request(app).get("/nivel")
 
+    expect(response.headers).toHaveProperty("x-total-count")
     expect(response.status).toBe(200)
   })
 

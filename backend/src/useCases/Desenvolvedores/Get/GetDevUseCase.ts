@@ -17,6 +17,14 @@ class GetDevUseCase {
       skip = 5 * (Number(page) - 1)
     }
 
+    const totalDevs = await client.desenvolvedores.count({
+      where: {
+        nome: {
+          startsWith: search
+        }
+      }
+    });
+
     const dev = await client.desenvolvedores.findMany({
       where: {
         nome: {
@@ -37,7 +45,7 @@ class GetDevUseCase {
       return 404
     }
 
-    return dev;
+    return { dev, totalDevs };
   }
 }
 

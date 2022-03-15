@@ -18,7 +18,9 @@ class GetDevController {
         return response.status(404).json({message: "Nenhum desenvolvedor encontrado."})
       }
 
-      return response.status(200).json(dev);
+      response.header("X-Total-Count", String(dev.totalDevs))
+
+      return response.status(200).json(dev.dev);
     } catch (err) {
       return response.status(400).json({message: "Erro ao buscar desenvolvedores!"})
     }

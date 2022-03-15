@@ -18,7 +18,9 @@ class GetNivelController {
         return response.status(404).json({message: "Nenhum nível encontrado."})
       }
 
-      return response.status(200).json(nivel);
+      response.header("X-Total-Count", String(nivel.totalNivels))
+
+      return response.status(200).json(nivel.nivel);
     } catch (err) {
       return response.status(400).json({message: "Erro ao buscar níveis!"})
     }
