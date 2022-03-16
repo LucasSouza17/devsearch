@@ -5,7 +5,7 @@ import { Box, Fab, Heading, Icon, Input } from "native-base";
 import { StatusBar } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
-const Niveis: React.FC = () => {
+export const Niveis: React.FC = () => {
   return (
     <Box background="white" width="full" height="full">
       <Box>
@@ -35,5 +35,3 @@ const Niveis: React.FC = () => {
     </Box>
   );
 };
-
-export default Niveis;

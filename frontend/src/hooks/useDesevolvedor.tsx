@@ -6,7 +6,7 @@ import { useToast } from "native-base";
 import { useDebouncedCallback } from "use-debounce/lib";
 import { api } from "../services/api";
 
-interface DesenvolvedorProps {
+export interface DesenvolvedorProps {
   id: number;
   nome: string;
   sexo: "M" | "F";
@@ -85,9 +85,7 @@ export function useDesenvolvedor<T = unknown>() {
         };
       });
 
-      if (totalPages >= page) {
-        setDesenvolvedores([...desenvolvedores, ...formatedData]);
-      }
+      setDesenvolvedores([...desenvolvedores, ...formatedData]);
 
       setIsLoading(false);
     } catch (err) {
@@ -101,21 +99,24 @@ export function useDesenvolvedor<T = unknown>() {
 
   const removeDev = async (id: number) => {
     try {
+      setIsLoading(true);
       await api.delete(`/dev/${id}`);
 
-      const newDesenvolvedores = desenvolvedores.filter(data => data.id !== id);
+      const newDesenvolvedores = await api.get(`/dev?page=1&order=${order}&search=${search}`)
 
-      setDesenvolvedores([...newDesenvolvedores]);
+      setDesenvolvedores([...newDesenvolvedores.data]);
 
       toast.show({
         description: "Desenvolvedor removido com sucesso!",
-        duration: 3000 // 3 segundos,
-      })
-
+        duration: 3000, // 3 segundos,
+      });
+      setPage(1);
+      setIsLoading(false);
     } catch (err) {
       toast.show({
-        description: "Erro ao remover desenvolvedor."
-      })
+        description: "Erro ao remover desenvolvedor.",
+      });
+      setIsLoading(false)
     }
   };
 
@@ -129,6 +130,6 @@ export function useDesenvolvedor<T = unknown>() {
     getDesenvolvedores,
     changePage,
     typeSearch,
-    removeDev
+    removeDev,
   };
 }

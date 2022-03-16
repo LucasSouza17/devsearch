@@ -5,13 +5,20 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { theme, Icon } from "native-base";
-
-import Desenvolvedores from "./pages/Desenvolvedores";
-import Niveis from "./pages/Niveis";
 import { Feather } from "@expo/vector-icons";
+
+import { Desenvolvedores } from "./pages/Desenvolvedores";
+import { Niveis } from "./pages/Niveis";
+import { FormDesenvolvedor } from "./pages/FormDesenvolvedor";
+import { DesenvolvedorProps } from "./hooks/useDesevolvedor";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
+export type RootStackParamList = {
+  FormDesenvolvedor: {type: "create" | "update", dev?: DesenvolvedorProps}
+  Tab: undefined
+}
 
 function Tabs() {
   return (
@@ -59,8 +66,9 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Tab"
-        screenOptions={{ headerShown: false }}>
+        screenOptions={{ headerShown: false, animation: "fade_from_bottom" }}>
         <Stack.Screen name="Tab" component={Tabs} />
+        <Stack.Screen name="FormDesenvolvedor" component={FormDesenvolvedor} />
       </Stack.Navigator>
     </NavigationContainer>
   );

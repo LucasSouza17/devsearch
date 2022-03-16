@@ -19,8 +19,11 @@ import { DevCard } from "../../components/DevCard";
 import { OrderModal } from "../../components/OrderModal";
 import { useDesenvolvedor } from "../../hooks/useDesevolvedor";
 import { RemoveModal } from "../../components/RemoveModal";
+import { useNavigation } from "@react-navigation/native";
 
-const Home: React.FC = () => {
+export const Desenvolvedores: React.FC = () => {
+  const navigation = useNavigation();
+
   const {
     desenvolvedores,
     totalPages,
@@ -42,13 +45,8 @@ const Home: React.FC = () => {
 
   return (
     <Box background="white" width="full" height="full">
-      <Box>
-        <Heading
-          color="blue.500"
-          marginTop={StatusBar.currentHeight! + 20}
-          paddingX={4}>
-          Desenvolvedores
-        </Heading>
+      <Box marginTop={StatusBar.currentHeight! + 20} paddingX={4}>
+        <Heading color="blue.500" size="md">Desenvolvedores</Heading>
       </Box>
       <Box paddingX={4} marginTop={4}>
         <Input
@@ -95,13 +93,15 @@ const Home: React.FC = () => {
               onPressRemove={() => {
                 setIsModalRemoveVisible(true), setSelectedDev(item.id);
               }}
-              onPressUpdate={() => {}}
+              onPressUpdate={() => navigation.navigate("FormDesenvolvedor", {type: "update", dev: item})}
             />
           </VStack>
         )}
       />
       <Fab
-        onPress={() => {}}
+        onPress={() =>
+          navigation.navigate("FormDesenvolvedor", { type: "create" })
+        }
         colorScheme="blue"
         renderInPortal={false}
         shadow={2}
@@ -135,5 +135,3 @@ const Home: React.FC = () => {
     </Box>
   );
 };
-
-export default Home;
