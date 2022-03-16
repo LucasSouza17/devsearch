@@ -4,14 +4,15 @@ import { GetNivelUseCase } from "./GetNivelUseCase";
 class GetNivelController {
   async handle(request: Request, response: Response) {
     try {
-      const { page = 1, search = "", order = "asc" } = request.query;
+      const { page = 1, search = "", order = "asc", full = false } = request.query;
 
       const getNivelUseCase = new GetNivelUseCase();
 
       const nivel = await getNivelUseCase.execute({
         page: Number(page),
         search: String(search),
-        order: <"asc" | "desc">order
+        order: <"asc" | "desc">order,
+        full: <boolean>full
       });
 
       if(nivel === 404) {

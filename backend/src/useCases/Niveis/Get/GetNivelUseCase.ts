@@ -6,10 +6,11 @@ interface INivelQuery {
   page: number;
   search: string;
   order: "asc" | "desc";
+  full: boolean;
 }
 
 class GetNivelUseCase {
-  async execute({ page, search, order }: INivelQuery) {
+  async execute({ page, search, order, full }: INivelQuery) {
     let skip: number;
 
     if (page === 1 || !page) {
@@ -36,7 +37,7 @@ class GetNivelUseCase {
         nivel: order,
       },
       skip,
-      take: 5,
+      take: full ? totalNivels : 5,
       include: {
         _count: {
           select: {
