@@ -95,7 +95,7 @@ export function useDesenvolvedor<T = unknown>() {
 
   const typeSearch = useDebouncedCallback((text: string) => {
     setSearch(text);
-  }, 800);
+  }, 500);
 
   const removeDev = async (id: number) => {
     try {

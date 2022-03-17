@@ -174,7 +174,6 @@ export const FormDesenvolvedor = () => {
                 }}
                 _selectedItem={{
                   bg: "blue.100",
-                  endIcon: <CheckIcon size="5" />,
                   _text: {
                     color: "blue.500",
                   },
@@ -225,7 +224,6 @@ export const FormDesenvolvedor = () => {
                 }}
                 _selectedItem={{
                   bg: "blue.100",
-                  endIcon: <CheckIcon size="5" />,
                   _text: {
                     color: "blue.500",
                   },
